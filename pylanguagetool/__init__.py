@@ -251,14 +251,14 @@ def main():
         for line in check_text.splitlines():
             response = api.check(line, **config)
             if len(response["matches"]) > 0:
-                if inputtype == "prop":
-                    print("{}".format(properties[linenum]))
                 print_errors(response,
                             config["api_url"],
                             not config["no_color"],
                             config["rules"],
                             config["rule_categories"]
                             )
+                if inputtype == "prop":
+                    print("  {}".format(properties[linenum]))
             if len(response["matches"]) > 0:
                 found = True
             linenum += 1
