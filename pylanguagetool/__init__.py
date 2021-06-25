@@ -114,7 +114,7 @@ def get_input_text(config):
             tuple will be none.
 
     """
-    if not sys.stdin.isatty():  # if piped into script
+    if not sys.stdin.isatty() and not config["input file"]:  # if piped into script
         lines = [line.rstrip() for line in sys.stdin.readlines() if line.rstrip()]
         return "\n".join(lines), None  # read text from pipe and remove empty lines
     elif config["clipboard"]:
