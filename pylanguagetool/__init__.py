@@ -15,7 +15,7 @@ from . import api
 from . import converters
 
 indention = " " * 4
-
+DIAGNOSE = False
 
 def init_config():
     p = configargparse.ArgParser(default_config_files=["~/.config/pyLanguagetool.conf"],
@@ -143,15 +143,16 @@ def print_errors(response, api_url, print_color=True, rules=False, rule_categori
         else:
             return text
 
-    print(colored(
-        "{} detected ({:.0f}% confidence)".format(language["detectedLanguage"]["name"],
-                                                  language["detectedLanguage"]["confidence"] * 100)
-        , Fore.LIGHTBLACK_EX))
-    if language["detectedLanguage"]["code"] != language["code"]:
+    if DIAGNOSE:
         print(colored(
-            "checking as {} text because of setting".format(language["name"])
+            "{} detected ({:.0f}% confidence)".format(language["detectedLanguage"]["name"],
+                                                    language["detectedLanguage"]["confidence"] * 100)
             , Fore.LIGHTBLACK_EX))
-    print()
+        if language["detectedLanguage"]["code"] != language["code"]:
+            print(colored(
+                "checking as {} text because of setting".format(language["name"])
+                , Fore.LIGHTBLACK_EX))
+        print()
 
     tick = colored(u"\u2713", Fore.LIGHTGREEN_EX) + " "
     cross = colored(u"\u2717", Fore.LIGHTRED_EX) + " "
@@ -212,7 +213,8 @@ def print_errors(response, api_url, print_color=True, rules=False, rule_categori
             print(descr + ":" + " " * (col_len - len(descr)) + url)
         print()
 
-    print(colored("Text checked by {url} ({version})".format(url=api_url, version=version), Fore.LIGHTBLACK_EX))
+    #sik# the following line is too noisy. 
+    # print(colored("Text checked by {url} ({version})".format(url=api_url, version=version), Fore.LIGHTBLACK_EX))
 
 
 def main():
@@ -243,16 +245,23 @@ def main():
     check_text = converters.convert(input_text, inputtype)
     if config["single_line"]:
         found = False
+        linenum = 0
+        if inputtype == "prop":
+            properties = input_text.splitlines()
         for line in check_text.splitlines():
             response = api.check(line, **config)
-            print_errors(response,
-                         config["api_url"],
-                         not config["no_color"],
-                         config["rules"],
-                         config["rule_categories"]
-                         )
+            if len(response["matches"]) > 0:
+                if inputtype == "prop":
+                    print("{}".format(properties[linenum]))
+                print_errors(response,
+                            config["api_url"],
+                            not config["no_color"],
+                            config["rules"],
+                            config["rule_categories"]
+                            )
             if len(response["matches"]) > 0:
                 found = True
+            linenum += 1
         if found:
             sys.exit(1)
 

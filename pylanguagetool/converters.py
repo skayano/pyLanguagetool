@@ -5,8 +5,9 @@ Support spellchecking various file formats by converting them to plain text
 import json
 import sys
 import xml.etree.ElementTree
+import re
 
-supported_extensions = ["txt", "html", "md", "markdown", "rst", "ipynb", "json", "xliff"]
+supported_extensions = ["txt", "html", "md", "markdown", "rst", "ipynb", "json", "xliff", "prop"]
 
 
 def convert(source, texttype):
@@ -35,6 +36,8 @@ def convert(source, texttype):
         return transifexjson2txt(source)
     if texttype == "xliff":
         return xliff2txt(source)
+    if texttype == "prop":
+        return prop2txt(source)
     if texttype != "txt":
         print("filetype not detected, assuming plaintext")
     return source
@@ -170,3 +173,19 @@ def notinstalled(package, convert_from, convert_to):
 you can install it with pip:
 pip install {package}""".format(package=package, source=convert_from, target=convert_to)
     )
+
+prop_pat = re.compile(r'^\s*(?P<key>.*)\s*=\s*(?P<value>.*)\s*$')  # mulple lines are not supported
+def prop2txt(proptext):
+    """
+    extract translations from properties
+
+    """
+    text = ""
+    lines = proptext.split('\n')
+    for line in lines:
+        m = prop_pat.match(line)
+        if m:
+            text += m.group("value") + "\n" # insert value + LF
+        else:
+            text += "\n"  # insert blank line
+    return text
