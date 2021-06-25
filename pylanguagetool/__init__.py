@@ -258,7 +258,7 @@ def main():
                             config["rule_categories"]
                             )
                 if inputtype == "prop":
-                    print("  {}".format(properties[linenum]))
+                    print("  {}\n".format(properties[linenum]))
             if len(response["matches"]) > 0:
                 found = True
             linenum += 1
