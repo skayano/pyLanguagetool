@@ -7,7 +7,7 @@ import sys
 import xml.etree.ElementTree
 import re
 
-supported_extensions = ["txt", "html", "md", "markdown", "rst", "ipynb", "json", "xliff", "prop"]
+supported_extensions = ["txt", "html", "md", "markdown", "rst", "ipynb", "json", "xliff", "prop", "mfile", "tkmsg"]
 
 
 def convert(source, texttype):
@@ -38,6 +38,10 @@ def convert(source, texttype):
         return xliff2txt(source)
     if texttype == "prop":
         return prop2txt(source)
+    if texttype == "mfile": 
+        return msg2txt(source)
+    if texttype == "tkmsg": 
+        return tkmsg2txt(source)
     if texttype != "txt":
         print("filetype not detected, assuming plaintext")
     return source
@@ -187,5 +191,43 @@ def prop2txt(proptext):
         if m:
             text += m.group("value") + "\n" # insert value + LF
         else:
+            text += "\n"  # insert blank line
+    return text
+
+mfilepat = re.compile(r'^#\s*(?P<msgtag>[\w\d_]+)\s+'
+                     r'((?P<msgnum>\d+)\s+)?'
+                     r'(?P<msg>.*$)')
+def msg2txt(msgtext):
+    """
+    extract translations from m or tkmsg
+
+    """
+    text = ""
+    lines = msgtext.split('\n')
+    for line in lines:
+        m = mfilepat.match(line)
+        if m:
+            text += m.group("msg") + "\n" # insert value + LF
+        else:
+            #sys.stderr.write("%s\n" % line)
+            text += "\n"  # insert blank line
+    return text
+
+tkmsgpat = re.compile(r'^#\s*(?P<msgtag>[\w\d_]+)\s+'
+                     r'((?P<msgnum>\d+)\s+)?'
+                     r'!\s*(?P<msg>.*$)')
+def tkmsg2txt(msgtext):
+    """
+    extract translations from m or tkmsg
+
+    """
+    text = ""
+    lines = msgtext.split('\n')
+    for line in lines:
+        m = tkmsgpat.match(line)
+        if m:
+            text += m.group("msg") + "\n" # insert value + LF
+        else:
+            #sys.stderr.write("%s\n" % line)
             text += "\n"  # insert blank line
     return text

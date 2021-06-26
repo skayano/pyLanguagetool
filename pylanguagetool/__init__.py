@@ -225,7 +225,8 @@ def main():
 
     if config['pwl']:
         with open(config['pwl'], 'r') as fs:
-            config['pwl'] = [w.strip() for w in fs.readlines()]
+            config['pwl'] = [w.strip() for w in fs.readlines() if w[0]!='#']
+        sys.stderr.write("%s\n" % config['pwl'])
 
     input_text, inputtype = get_input_text(config)
     if not input_text:
@@ -246,7 +247,7 @@ def main():
     if config["single_line"]:
         found = False
         linenum = 0
-        if inputtype == "prop":
+        if inputtype in ["prop", "mfile", "tkmsg"]:
             properties = input_text.splitlines()
         for line in check_text.splitlines():
             response = api.check(line, **config)
@@ -257,8 +258,11 @@ def main():
                             config["rules"],
                             config["rule_categories"]
                             )
-                if inputtype == "prop":
+                if inputtype in ["prop", "mfile", "tkmsg"]:
                     print("  {}\n".format(properties[linenum]))
+            # else:
+            #     if inputtype in ["prop", "mfile", "tkmsg"]:
+            #         print("  {}\n".format(properties[linenum]))
             if len(response["matches"]) > 0:
                 found = True
             linenum += 1
