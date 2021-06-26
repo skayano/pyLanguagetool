@@ -247,7 +247,7 @@ def main():
     if config["single_line"]:
         found = False
         linenum = 0
-        if inputtype in ["prop", "m", "tkmsg"]:
+        if inputtype in ["properties", "m", "tkmsg"]:
             properties = input_text.splitlines()
         for line in check_text.splitlines():
             response = api.check(line, **config)
@@ -258,7 +258,7 @@ def main():
                             config["rules"],
                             config["rule_categories"]
                             )
-                if inputtype in ["prop", "m", "tkmsg"]:
+                if inputtype in ["properties", "m", "tkmsg"]:
                     print("  {}\n".format(properties[linenum]))
             # else:
             #     if inputtype in ["prop", "mfile", "tkmsg"]:

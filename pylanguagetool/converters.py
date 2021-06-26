@@ -7,7 +7,7 @@ import sys
 import xml.etree.ElementTree
 import re
 
-supported_extensions = ["txt", "html", "md", "markdown", "rst", "ipynb", "json", "xliff", "prop", "m", "tkmsg"]
+supported_extensions = ["txt", "html", "md", "markdown", "rst", "ipynb", "json", "xliff", "properties", "m", "tkmsg"]
 
 
 def convert(source, texttype):
@@ -36,7 +36,7 @@ def convert(source, texttype):
         return transifexjson2txt(source)
     if texttype == "xliff":
         return xliff2txt(source)
-    if texttype == "prop":
+    if texttype == "properties":
         return prop2txt(source)
     if texttype == "m": 
         return msg2txt(source)
