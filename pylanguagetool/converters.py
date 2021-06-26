@@ -7,7 +7,7 @@ import sys
 import xml.etree.ElementTree
 import re
 
-supported_extensions = ["txt", "html", "md", "markdown", "rst", "ipynb", "json", "xliff", "prop", "mfile", "tkmsg"]
+supported_extensions = ["txt", "html", "md", "markdown", "rst", "ipynb", "json", "xliff", "prop", "m", "tkmsg"]
 
 
 def convert(source, texttype):
@@ -38,7 +38,7 @@ def convert(source, texttype):
         return xliff2txt(source)
     if texttype == "prop":
         return prop2txt(source)
-    if texttype == "mfile": 
+    if texttype == "m": 
         return msg2txt(source)
     if texttype == "tkmsg": 
         return tkmsg2txt(source)
