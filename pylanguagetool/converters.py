@@ -189,7 +189,7 @@ def prop2txt(proptext):
     for line in lines:
         m = prop_pat.match(line)
         if m:
-            key = m.group("key")
+            key = m.group("key").strip()
             if key.endswith(".lcl") or key.endswith(".notrans"):
                 text += "\n"  # ignore it
             else:
