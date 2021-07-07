@@ -138,21 +138,30 @@ def print_errors(response, api_url, print_color=True, rules=False, rule_categori
 
     def colored(text, color):
         if print_color:
-            init_colors()
+            init_colors(strip=False)
             return color + text + Fore.RESET
         else:
             return text
 
-    if DIAGNOSE:
+    # if DIAGNOSE:
+    #     print(colored(
+    #         "{} detected ({:.0f}% confidence)".format(language["detectedLanguage"]["name"],
+    #                                                 language["detectedLanguage"]["confidence"] * 100)
+    #         , Fore.LIGHTBLACK_EX))
+    #     if language["detectedLanguage"]["code"] != language["code"]:
+    #         print(colored(
+    #             "checking as {} text because of setting".format(language["name"])
+    #             , Fore.LIGHTBLACK_EX))
+    #     print()
+    # 27june2021/sik - Make it more informative.
+    if language["detectedLanguage"]["code"] != language["code"]:
         print(colored(
-            "{} detected ({:.0f}% confidence)".format(language["detectedLanguage"]["name"],
-                                                    language["detectedLanguage"]["confidence"] * 100)
+        "{} detected ({:.0f}% confidence)".format(language["detectedLanguage"]["name"],
+                                                language["detectedLanguage"]["confidence"] * 100)
+        , Fore.LIGHTBLACK_EX))
+        print(colored(
+            "checking as {} text because of setting".format(language["name"])
             , Fore.LIGHTBLACK_EX))
-        if language["detectedLanguage"]["code"] != language["code"]:
-            print(colored(
-                "checking as {} text because of setting".format(language["name"])
-                , Fore.LIGHTBLACK_EX))
-        print()
 
     tick = colored(u"\u2713", Fore.LIGHTGREEN_EX) + " "
     cross = colored(u"\u2717", Fore.LIGHTRED_EX) + " "
@@ -267,8 +276,9 @@ def main():
                 found = True
             linenum += 1
         if found:
+            print('\x1b[6;30;43m' + 'Failed!' + '\x1b[0m')
             sys.exit(1)
-
+        print('\x1b[6;30;42m' + 'Success!' + '\x1b[0m')
     else:
         response = api.check(check_text, **config)
         print_errors(response,
