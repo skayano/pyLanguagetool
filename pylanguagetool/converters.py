@@ -214,8 +214,8 @@ def msg2txt(msgtext):
         if m:
             msg = m.group('msg')
             text0 = re.sub(yp_pat,r'{\4}',msg)
-            if text0 != msg:    
-                sys.stderr.write("%s\n%s\n\n" % (msg,text0))
+            # if text0 != msg:    
+            #     sys.stderr.write("%s\n%s\n\n" % (msg,text0))
             text += text0 + "\n" # insert value + LF
         else:
             #sys.stderr.write("%s\n" % line)
