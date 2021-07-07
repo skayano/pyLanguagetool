@@ -201,6 +201,7 @@ def prop2txt(proptext):
 mfilepat = re.compile(r'^#\s*(?P<msgtag>[\w\d_]+)\s+'
                      r'((?P<msgnum>\d+)\s+)?'
                      r'(?P<msg>.*$)')
+yp_pat = re.compile(r'(%[-]?[\d]?(?P<order>#\d,?)?[\d]+[@]?[l]?[\*]?((?P<G>[ahkmnqtwzscbxpodifeguvy])))')
 def msg2txt(msgtext):
     """
     extract translations from m or tkmsg
@@ -211,7 +212,11 @@ def msg2txt(msgtext):
     for line in lines:
         m = mfilepat.match(line)
         if m:
-            text += m.group("msg") + "\n" # insert value + LF
+            msg = m.group('msg')
+            text0 = re.sub(yp_pat,r'{\4}',msg)
+            if text0 != msg:    
+                sys.stderr.write("%s\n%s\n\n" % (msg,text0))
+            text += text0 + "\n" # insert value + LF
         else:
             #sys.stderr.write("%s\n" % line)
             text += "\n"  # insert blank line
