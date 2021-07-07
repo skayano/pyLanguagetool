@@ -201,7 +201,7 @@ def prop2txt(proptext):
 mfilepat = re.compile(r'^#\s*(?P<msgtag>[\w\d_]+)\s+'
                      r'((?P<msgnum>\d+)\s+)?'
                      r'(?P<msg>.*$)')
-yp_pat = re.compile(r'(%[-]?[\d]?(?P<order>#\d,?)?[\d]+[@]?[l]?[\*]?((?P<G>[ahkmnqtwzscbxpodifeguvy])))')
+yp_pat = re.compile(r'(%[-]?[\d]?(?P<order>#\d,?([\d]+)?)?[@]?[l]?[\*]?((?P<G>[ahkmnqtwzscbxpodifeguvy])))')
 def msg2txt(msgtext):
     """
     extract translations from m or tkmsg
