@@ -198,8 +198,8 @@ def prop2txt(proptext):
             else:
                 value = m.group("value")
                 text0 = value.replace(r'\n', ' ') # remove it 
-                if text0 != value:    
-                    sys.stderr.write("%s\n%s\n\n" % (value,text0))
+                # if text0 != value:    
+                #     sys.stderr.write("%s\n%s\n\n" % (value,text0))
                 text += text0 + "\n" # insert value + LF
         else:
             text += "\n"  # insert blank line
