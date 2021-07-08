@@ -183,6 +183,9 @@ def prop2txt(proptext):
     """
     extract translations from properties
 
+    # todo:
+      - property may have "\n" character.  This needs to be replace diwht 
+
     """
     text = ""
     lines = proptext.split('\n')
@@ -193,7 +196,11 @@ def prop2txt(proptext):
             if key.endswith(".lcl") or key.endswith(".notrans"):
                 text += "\n"  # ignore it
             else:
-                text += m.group("value") + "\n" # insert value + LF
+                value = m.group("value")
+                text0 = value.replace(r'\n', ' ') # remove it 
+                if text0 != value:    
+                    sys.stderr.write("%s\n%s\n\n" % (value,text0))
+                text += text0 + "\n" # insert value + LF
         else:
             text += "\n"  # insert blank line
     return text
