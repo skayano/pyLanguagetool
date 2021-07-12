@@ -6,6 +6,7 @@ import json
 import sys
 import xml.etree.ElementTree
 import re
+from bs4 import BeautifulSoup
 
 supported_extensions = ["txt", "html", "md", "markdown", "rst", "ipynb", "json", "xliff", "properties", "m", "tkmsg"]
 
@@ -179,6 +180,9 @@ pip install {package}""".format(package=package, source=convert_from, target=con
     )
 
 prop_pat = re.compile(r'^\s*(?P<key>.*)\s*=\s*(?P<value>.*)\s*$')  # mulple lines are not supported
+html_pat = re.compile(r'<[\w\d]+>') 
+ncr_pat = re.compile(r'&[\w]+;') 
+
 def prop2txt(proptext):
     """
     extract translations from properties
@@ -187,6 +191,15 @@ def prop2txt(proptext):
       - property may have "\n" character.  This needs to be replace diwht 
 
     """
+
+    def getText(string):
+        if string.find(r'\n')>=0:
+            return value.replace(r'\n',' ')
+        if html_pat.search(string) or ncr_pat.search(string):
+            soup = BeautifulSoup(string, "html.parser")
+            return soup.getText()
+        return string
+
     text = ""
     lines = proptext.split('\n')
     for line in lines:
@@ -197,7 +210,7 @@ def prop2txt(proptext):
                 text += "\n"  # ignore it
             else:
                 value = m.group("value")
-                text0 = value.replace(r'\n', ' ') # remove it 
+                text0 = getText(value) # remove it 
                 # if text0 != value:    
                 #     sys.stderr.write("%s\n%s\n\n" % (value,text0))
                 text += text0 + "\n" # insert value + LF
